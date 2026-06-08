@@ -1,13 +1,11 @@
 using Exemplo;
 using Microsoft.EntityFrameworkCore;
 using Template.Infra;
+using Scalar.AspNetCore; // <-- NOVO: Importação do Scalar
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -19,11 +17,16 @@ GeradorDeServicos.ServiceProvider = builder.Services.BuildServiceProvider();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // 1. Gera o arquivo JSON (a "planta baixa" da API) na rota que o Scalar espera
+    app.UseSwagger(options =>
+    {
+        options.RouteTemplate = "openapi/{documentName}.json";
+    });
+
+    // 2. Apresenta o arquivo JSON usando a interface interativa do Scalar
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
