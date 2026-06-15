@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 namespace Exemplo.Models
 {
     public class Viatura
@@ -20,5 +22,9 @@ namespace Exemplo.Models
 
         // RF09 - Gestão de Guarnição
         public List<Bombeiro> Guarnicao { get; set; } = new List<Bombeiro>();
+        public int CorporacaoId { get; set; }
+
+        [JsonIgnore] // Impede loop infinito ao listar no Swagger
+        public Corporacao? Corporacao { get; set; }
     }
 }
